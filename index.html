@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entry</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #journalEntries {
+            margin-top: 20px;
+        }
+        .entry {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Journal Entry</h1>
+    <input type="text" id="journalEntry" placeholder="Enter your journal entry...">
+    <button onclick="submitEntry()">Submit</button>
+    <div id="journalEntries">
+        <!-- Journal entries will be displayed here -->
+    </div>
+
+    <script>
+        // Function to handle submission of journal entry
+        function submitEntry() {
+            // Get the current date and time
+            var currentDate = new Date();
+            var monthNames = ["January", "February", "March", "April", "May", "June",
+                              "July", "August", "September", "October", "November", "December"];
+            var monthName = monthNames[currentDate.getMonth()];
+            var dateTime = monthName + " " + currentDate.getDate() + ", " + currentDate.getFullYear() + " " + currentDate.toLocaleTimeString();
+
+            // Get the journal entry from the input box
+            var entryText = document.getElementById("journalEntry").value;
+
+            // Check if the entry is not empty
+            if (entryText.trim() !== "") {
+                // Create a new entry div
+                var entryDiv = document.createElement("div");
+                entryDiv.className = "entry";
+                entryDiv.textContent = dateTime + " - " + entryText;
+
+                // Append the entry to the journal entries container
+                document.getElementById("journalEntries").appendChild(entryDiv);
+
+                // Save the entry to local storage
+                var existingEntries = localStorage.getItem("journalEntries");
+                if (!existingEntries) {
+                    existingEntries = [];
+                } else {
+                    existingEntries = JSON.parse(existingEntries);
+                }
+
+                existingEntries.push({ date: dateTime, entry: entryText });
+                localStorage.setItem("journalEntries", JSON.stringify(existingEntries));
+
+                // Clear the input box
+                document.getElementById("journalEntry").value = "";
+            } else {
+                alert("Please enter a journal entry.");
+            }
+        }
+
+        // Function to load existing journal entries from local storage
+        function loadEntries() {
+            var existingEntries = localStorage.getItem("journalEntries");
+            if (existingEntries) {
+                existingEntries = JSON.parse(existingEntries);
+                var journalEntriesDiv = document.getElementById("journalEntries");
+
+                existingEntries.forEach(function(entry) {
+                    var entryDiv = document.createElement("div");
+                    entryDiv.className = "entry";
+                    entryDiv.textContent = entry.date + " - " + entry.entry;
+                    journalEntriesDiv.appendChild(entryDiv);
+                });
+            }
+        }
+
+        // Load existing entries when the page loads
+        loadEntries();
+
+        // Enable submission on Enter key press
+        document.getElementById("journalEntry").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                submitEntry();
+            }
+        });
+    </script>
+</body>
+</html>
+
