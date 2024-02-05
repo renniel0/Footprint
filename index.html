@@ -49,6 +49,17 @@
 
     <script>
         // Function to handle submission of journal entry
+
+        var isFocusSet = false;
+
+        // Event listener to set focus on the journal entry input box
+        document.addEventListener("keydown", function(event) {
+            if (!isFocusSet) {
+                document.getElementById("journalEntry").focus();
+                isFocusSet = true;
+            }
+        });
+        
         function submitEntry() {
             // Get the current date and time
             var currentDate = new Date();
